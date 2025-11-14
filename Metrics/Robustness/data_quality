@@ -47,6 +47,13 @@ def compute_psnr(img_ref: np.ndarray, img_pred: np.ndarray, data_range=None):
 
     return psnr(img_ref, img_pred, data_range=data_range)
 
+def compute_specificity(mask_ref, mask_pred, ignore_mask=None, eps=1e-8):
+    """
+    Specificity = TN / (TN + FP)
+    """
+    tp, fp, fn, tn = summarize_confusion(mask_ref, mask_pred, ignore_mask)
+    return tn / (tn + fp + eps)
+
 def compute_fpr(mask_ref, mask_pred, ignore_mask=None, eps=1e-8):
     """
     False Positive Rate (FPR) = FP / (FP + TN)
