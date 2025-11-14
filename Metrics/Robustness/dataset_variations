@@ -14,6 +14,7 @@ def compute_roc_auc(y_true, y_score, multi_class="ovr", average="macro"):
         multi_class=multi_class,
         average=average
     )
+
 def summarize_confusion(mask_true, mask_pred, ignore_mask=None):
     """
     Compute TP/FP/FN/TN for segmentation masks.
@@ -96,3 +97,14 @@ def compute_iou(y_true, y_pred, ignore_mask=None, eps=1e-8):
 
     tp, fp, fn, _ = summarize_confusion(y_true, y_pred, ignore_mask)
     return tp / (tp + fp + fn + eps)
+
+def compute_dice(y_true, y_pred, ignore_mask=None, eps=1e-8):
+    y_true = np.asarray(y_true)
+    y_pred = np.asarray(y_pred)
+
+    # IoU is undefined for classification
+    if y_true.ndim == 1:
+        raise ValueError("IoU is only defined for segmentation masks.")
+
+    tp, fp, fn, _ = summarize_confusion(y_true, y_pred, ignore_mask)
+    return 2 * tp / (2 * tp + fp + fn)
