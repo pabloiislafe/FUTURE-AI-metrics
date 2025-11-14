@@ -22,7 +22,7 @@ The **FUTURE-AI framework** defines six foundational principles for trustworthy 
 ## Installation
 
 ```bash
-git clone https://github.com/your-user/FUTURE-AI-metrics.git
+git clone https://github.com/pabloiislafe/FUTURE-AI-metrics.git
 cd FUTURE-AI-metrics
 
 conda env create -f environment.yml
