@@ -19,7 +19,7 @@ The **FUTURE-AI framework** defines six foundational principles for trustworthy 
 5. **Robustness** – resilience to variability and imperfections  
 6. **Explainability** – clear reasoning behind predictions
 
-## 🚀 Installation
+## Installation
 
 ```bash
 git clone https://github.com/your-user/FUTURE-AI-metrics.git
