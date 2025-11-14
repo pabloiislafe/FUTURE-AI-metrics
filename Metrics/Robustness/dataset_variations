@@ -1,0 +1,20 @@
+from sklearn.metrics import roc_auc_score as skl_roc_auc
+
+def auc_binary(y_true, y_scores):
+    """
+    AUC binary classification.
+    y_scores must be probabilities.
+    """
+    return skl_roc_auc(y_true, y_scores)
+
+def auc_multiclass(y_true, y_scores, average="macro"):
+    """
+    AUC multiclass. y_scores = matrix (N, K)
+    """
+    return skl_roc_auc(y_true, y_scores, multi_class="ovr", average=average)
+
+def auc_per_class(y_true, y_scores):
+    """
+    AUC for each class.
+    """
+    return skl_roc_auc(y_true, y_scores, multi_class="ovr", average=None)
