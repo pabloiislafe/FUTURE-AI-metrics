@@ -16,4 +16,5 @@ setup(
     author_email="parodbe@gmail.com",
     url="https://github.com/pabloiislafe/FUTURE-AI-metrics",
     packages=find_packages(),
+    include_package_data=True,
     license="GNU")
