@@ -1,20 +1,128 @@
 from sklearn.metrics import roc_auc_score as skl_roc_auc
+import numpy as np
+from sklearn.metrics import (
+    accuracy_score,
+    precision_score,
+    recall_score,
+    f1_score,
+    jaccard_score,
+    roc_auc_score,
+    confusion_matrix
+)
 
-def auc_binary(y_true, y_scores):
+# -------------------------------------------------------------
+# ROC-AUC (probabilities needed)
+# -------------------------------------------------------------
+def compute_roc_auc(y_true, y_score, multi_class="ovr", average="macro"):
     """
-    AUC binary classification.
-    y_scores must be probabilities.
-    """
-    return skl_roc_auc(y_true, y_scores)
+    ROC-AUC score.
+    
+    y_true: integer labels (N,)
+    y_score: prediction probabilities (N, C) for multiclass
+             or (N,) for binary
 
-def auc_multiclass(y_true, y_scores, average="macro"):
-    """
-    AUC multiclass. y_scores = matrix (N, K)
-    """
-    return skl_roc_auc(y_true, y_scores, multi_class="ovr", average=average)
+    multi_class: "ovr" or "ovo" (ignored in binary)
+    average: "macro", "weighted"
 
-def auc_per_class(y_true, y_scores):
+    IMPORTANT:
+        For binary classification, y_score must be probability of class 1.
+        For multiclass, y_score must be a probability matrix (N, num_classes).
     """
-    AUC for each class.
+    return roc_auc_score(
+        y_true,
+        y_score,
+        multi_class=multi_class,
+        average=average
+    )
+
+# -------------------------------------------------------------
+# BASIC CLASSIFICATION METRICS (binary / multiclass / multilabel)
+# -------------------------------------------------------------
+def compute_accuracy(y_true, y_pred):
     """
-    return skl_roc_auc(y_true, y_scores, multi_class="ovr", average=None)
+    Accuracy for binary, multiclass or multilabel classification.
+    
+    y_true: array-like of shape (N,)
+    y_pred: array-like of shape (N,)
+    """
+    return accuracy_score(y_true, y_pred)
+
+
+def compute_precision(y_true, y_pred, average="macro"):
+    """
+    Precision score.
+    average: 'binary', 'macro', 'micro', 'weighted'
+    """
+    return precision_score(y_true, y_pred, average=average, zero_division=0)
+
+
+def compute_recall(y_true, y_pred, average="macro"):
+    """
+    Recall score.
+    average: 'binary', 'macro', 'micro', 'weighted'
+    """
+    return recall_score(y_true, y_pred, average=average, zero_division=0)
+
+
+def compute_f1(y_true, y_pred, average="macro"):
+    """
+    F1 score.
+    average: 'binary', 'macro', 'micro', 'weighted'
+    """
+    return f1_score(y_true, y_pred, average=average, zero_division=0)
+
+
+# -------------------------------------------------------------
+# OVERLAP METRICS (IoU, Dice)
+# For segmentation OR classification
+# -------------------------------------------------------------
+
+import numpy as np
+
+def summarize_confusion(mask_true: np.ndarray,
+                        mask_pred: np.ndarray,
+                        ignore: np.ndarray = None):
+    """
+    Compute TP, FP, FN, TN for two boolean segmentation masks.
+    Optionally provide an 'ignore' mask to exclude some voxels.
+    """
+
+    # Ensure boolean form
+    ref = np.asarray(mask_true, dtype=bool)
+    prd = np.asarray(mask_pred, dtype=bool)
+
+    # Voxels to keep
+    if ignore is None:
+        include_mask = np.ones(ref.shape, dtype=bool)
+    else:
+        include_mask = ~np.asarray(ignore, dtype=bool)
+
+    # Apply mask
+    ref_m = ref & include_mask
+    prd_m = prd & include_mask
+
+    # Confusion components
+    tp = np.sum(ref_m & prd_m)
+    fp = np.sum(~ref_m & prd_m)
+    fn = np.sum(ref_m & ~prd_m)
+    tn = np.sum(~ref_m & ~prd_m)
+
+    return tp, fp, fn, tn
+
+def dice_score(mask_ref, mask_pred, ignore_mask=None, eps=1e-8):
+    """
+    Compute the Dice Similarity Coefficient using TP, FP, FN.
+    Dice = 2TP / (2TP + FP + FN)
+    """
+    tp, fp, fn, _ = summarize_confusion(mask_ref, mask_pred, ignore_mask)
+    return (2 * tp) / (2 * tp + fp + fn + eps)
+
+def iou_score(mask_ref, mask_pred, ignore_mask=None, eps=1e-8):
+    """
+    Compute the Intersection over Union.
+    IoU = TP / (TP + FP + FN)
+    """
+    tp, fp, fn, _ = summarize_confusion(mask_ref, mask_pred, ignore_mask)
+    return tp / (tp + fp + fn + eps)
+
+
