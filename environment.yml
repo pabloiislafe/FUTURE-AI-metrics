@@ -1,0 +1,13 @@
+name: future-ai-metrics
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+  - numpy
+  - scipy
+  - scikit-image       # SSIM, PSNR
+  - scikit-learn       # ROC-AUC, accuracy, precision, recall, F1, IoU (jaccard)
+  - pandas
+  - pip
