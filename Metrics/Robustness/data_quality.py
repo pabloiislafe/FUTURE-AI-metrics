@@ -1,7 +1,7 @@
 import numpy as np
 from skimage.metrics import structural_similarity as ssim
 from skimage.metrics import peak_signal_noise_ratio as psnr
-from metrics.robustness.dataset_variations import summarize_confusion
+from Metrics.robustness.dataset_variations import summarize_confusion
 
 def compute_ssim(img_ref: np.ndarray, 
                  img_pred: np.ndarray, 
