@@ -10,4 +10,5 @@ dependencies:
   - scikit-image       # SSIM, PSNR
   - scikit-learn       # ROC-AUC, accuracy, precision, recall, F1, IoU (jaccard)
   - pandas
+  - adversarial-robustness-toolbox
   - pip
