@@ -1,3 +1,7 @@
+from art.estimators.classification import SklearnClassifier
+from sklearn.metrics import roc_auc_score
+import numpy as np
+
 def adversarial_evaluation(X, y, estimator, clip_values=None, attack_class=HopSkipJump, max_iter=10):
     """
     Evaluates one or multiple models (if a list) against an adversarial attack.
@@ -6,10 +10,6 @@ def adversarial_evaluation(X, y, estimator, clip_values=None, attack_class=HopSk
     - Attack Success Rate (ASR)
     - AUC-ROC (if applicable)
     """
-    from art.estimators.classification import SklearnClassifier
-    from sklearn.metrics import roc_auc_score
-    import numpy as np
-
     is_list = isinstance(estimator, list)
     aggregated = []
 
