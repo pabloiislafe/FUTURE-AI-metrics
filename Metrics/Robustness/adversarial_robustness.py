@@ -1,4 +1,5 @@
 from art.estimators.classification import SklearnClassifier
+from art.attacks.evasion import HopSkipJump
 from sklearn.metrics import roc_auc_score
 import numpy as np
 
