@@ -17,7 +17,7 @@ def adversarial_evaluation(X, y, estimator, clip_values=None, attack_class=HopSk
     # Case 1: Multiple estimators
     if is_list:
         for i, model_dict in enumerate(estimator):
-            print(f"\n🔍 Evaluating model {i}: {type(model_dict['estimator'])}")
+            print(f"\nEvaluating model {i}: {type(model_dict['estimator'])}")
 
             try:
                 # Use specific X and y for this model
@@ -27,7 +27,7 @@ def adversarial_evaluation(X, y, estimator, clip_values=None, attack_class=HopSk
                 clip_min = float(np.min(X_model))
                 clip_max = float(np.max(X_model))
                 if clip_min >= clip_max:
-                    print(f"❌ Invalid clip_values: min={clip_min}, max={clip_max}")
+                    print(f"Invalid clip_values: min={clip_min}, max={clip_max}")
                     continue
 
                 # Wrap model with ART
@@ -58,9 +58,9 @@ def adversarial_evaluation(X, y, estimator, clip_values=None, attack_class=HopSk
                     auc = None
 
                 # Show metrics
-                print(f"✅ After-attack Accuracy : {acc_adv:.3f}")
-                print(f"🔥 Attack Success Rate   : {asr:.3f}")
-                print(f"🎯 AUC-ROC adversarial   : {auc:.3f}" if auc is not None else "ℹ️ AUC-ROC not available")
+                print(f"After-attack Accuracy : {acc_adv:.3f}")
+                print(f"Attack Success Rate   : {asr:.3f}")
+                print(f"AUC-ROC adversarial   : {auc:.3f}" if auc is not None else "AUC-ROC not available")
 
                 # Store for aggregation
                 aggregated.append({
@@ -70,19 +70,19 @@ def adversarial_evaluation(X, y, estimator, clip_values=None, attack_class=HopSk
                 })
 
             except Exception as e:
-                print(f"❌ Model {i} incompatible with ART: {e}")
+                print(f"Model {i} incompatible with ART: {e}")
 
         # Combined summary
         if aggregated:
-            print("\n📊 Combined metrics:")
+            print("\nCombined metrics:")
             mean_acc = np.mean([m['after_attack_accuracy'] for m in aggregated])
             mean_asr = np.mean([m['attack_success_rate'] for m in aggregated])
             aucs = [m['auc_roc_adversarial'] for m in aggregated if m['auc_roc_adversarial'] is not None]
             mean_auc = np.mean(aucs) if aucs else None
 
-            print(f"✅ After-attack Accuracy : {mean_acc:.3f}")
-            print(f"🔥 Attack Success Rate   : {mean_asr:.3f}")
-            print(f"🎯 AUC-ROC adversarial   : {mean_auc:.3f}" if mean_auc is not None else "ℹ️ AUC-ROC not available")
+            print(f"After-attack Accuracy : {mean_acc:.3f}")
+            print(f"Attack Success Rate   : {mean_asr:.3f}")
+            print(f"AUC-ROC adversarial   : {mean_auc:.3f}" if mean_auc is not None else "AUC-ROC not available")
 
         return aggregated
 
